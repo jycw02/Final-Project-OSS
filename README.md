@@ -16,9 +16,11 @@ Here you can see what the dataset normally looks like:
 ![example dataset](https://user-images.githubusercontent.com/113161516/206757242-1b8aa43e-2ca0-4fca-98d9-50e1a73d58db.PNG)
 
 
-The data needs to be presented in a good structure, to find the right words that fit the recommender. So, from this metadata, I found out the five most important elements (e.g the five most important actors).
+The data needs to be presented in a good structure, to find the right words that fit the recommender. So, from this metadata, I found out the five most important elements (e.g the five most important actors). 
 
-The first step was to import the data. After that i merged and cleaned the dataset (remove dashes, reduce datavolume). Then i created vectors (Term Frequency-Inverse Document Frequency). This technique places more importance on rare words instead of stopwords, like "a". This helps improve the recommendation accuracy (Term Frequency-Inverse Document Frequency finds how many times a word appears)
+The first step was to import the data. After that i merged and cleaned the dataset (remove dashes, reduce datavolume). Also, I filtered the movies, by only getting movies that have been rated more than 85% of the time. The reason for this, is because I wanted to recommend them famous movies, and not movies that have only been reviewed/watched by little to no people.
+
+Then I created vectors (Term Frequency-Inverse Document Frequency). This technique places more importance on rare words instead of stopwords, like "a". This helps improve the recommendation accuracy (Term Frequency-Inverse Document Frequency finds how many times a word appears)
 This eventually provides a matrix where the columns give an overview of the vocab that appear in the movie, and show how the improtance of words.
 
 Text should be preprocessed and converted. So, I performed dimension reduction. With the help of the matrix, I computed a score that shows the similarity of a movie. 
