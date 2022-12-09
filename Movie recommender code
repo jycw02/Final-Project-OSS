@@ -2,7 +2,6 @@
 
 import pandas as pd
 import ast
-from ast import literal_eval
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
@@ -37,7 +36,7 @@ def convert(text):
 #defining strings in objects
 lijstje = ['keywords','cast','genres']
 for lijst in lijstje:
-    dfft[lijst] = dfft[lijst].apply(literal_eval)
+    dfft[lijst] = dfft[lijst].apply(ast.literal_eval)
 
 #dropna method will change the datasets
 #by setting in inplace=true, the missing values will be overwritten and dropped from the dataset
