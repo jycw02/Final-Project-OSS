@@ -10,6 +10,7 @@ scipy (https://www.scipy.org/)
 
 This project is a movie based recommender. The system computes similarity scores for movies based on their cast, overview and genres. 
 The dataset is from MovieLens: https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata 
+*Unfortunately the credits document was too big, so I couldn't upload it. But you can find it in this link.
 
 Here you can see what the dataset normally looks like:
 ![example dataset](https://user-images.githubusercontent.com/113161516/206757242-1b8aa43e-2ca0-4fca-98d9-50e1a73d58db.PNG)
