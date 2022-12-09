@@ -3,6 +3,11 @@ Movie Recommender System
 
 This is my end project for Open Source Software.
 
+##Dependencies
+numpy (http://www.numpy.org/)
+scipy (https://www.scipy.org/)
+
+
 This project is a movie based recommender. The system computes similarity scores for movies based on their cast, overview and genres. 
 The dataset is from MovieLens: https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata 
 
