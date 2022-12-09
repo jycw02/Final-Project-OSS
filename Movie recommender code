@@ -1,0 +1,113 @@
+#import libraries
+import pandas as pd
+import ast
+from ast import literal_eval
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+
+#import datasets
+#the datasets are from "Movielens" and contains movies with details
+df = pd.read_csv('movielens_movies.csv')
+dff = pd.read_csv('movielens_credits.csv')
+        
+#merging the movies based on the title.
+#this makes the database more easy to read (all data is together in one column) and we can use data from both databases
+dfft=df.merge(dff, on='title')
+#I chose move_id, title, overview, cast ect to show, because i think these are most important for this project
+dfft=dfft[['title','overview','genres','keywords','cast']]
+
+#In this part I will check if null values are present and how many entries there are in the datasets
+#I will do preprocessing, so we can analyse the datasets better
+#by preprocessing suppresses undesired features and help imrpove the quality of the datasets
+dfft.isnull().sum()
+
+def convert(text):
+    a = []
+    for i in ast.literal_eval(text):
+        a.append(i['name'])
+    return a
+
+#defining strings in objects
+lijstje = ['keywords','cast','genres']
+for lijst in lijstje:
+    dfft[lijst] = dfft[lijst].apply(literal_eval)
+
+#dropna method will change the datasets
+#by setting in inplace=true, the missing values will be overwritten and dropped from the dataset
+dfft.dropna(inplace=True)
+dfft.isnull().sum()
+
+#Building a metric to find a system that can easily find similar movies.
+#TfidVectorizer can help find similarities between sentences ect. By using stop_words english, irrelevant words like "the", "or" ,and "a" will be removed
+tv = TfidfVectorizer(stop_words='english')
+#Now we will construct the TFIDF by changing and forming data
+#Construct the required TF-IDF matrix by fitting and transforming the data
+#overview is the overview from the datasets
+tv_mat = tv.fit_transform(dfft['overview'])
+
+#making the similarity matrix. Cosine is helpful since it measures the similarity between data objects
+matrix_s = linear_kernel(tv_mat, tv_mat)
+#ind = index
+#this helps figure out what the index is of a movie in the df
+index = pd.Series(dfft.index, index=dfft['title'])
+
+
+#function list, returns lists
+#more then 5 elements in the list, then those first five. 
+def kr_lijst(k):
+    if isinstance(k, list):
+        el = [j['name'] for j in k]
+        if len(el) > 5:
+            el = el[:5]
+        return el
+
+    #list with nothing in it if there is error in datasets (the whole lists gets returned)
+    return []
+
+lijstje = ['cast', 'keywords', 'genres']
+for lijst in lijstje:
+    dfft[lijst] = dfft[lijst].apply(kr_lijst)
+
+#removing spaces and return data in lowercase 
+#this will make it easier to differentiate for example actors ect with the same first name
+#isinstance checks if object belongs to class
+def gegevens(j):
+    if isinstance(j, list):
+        return [str.lower(k.replace(" ", "")) for k in j]
+    else:
+            return ''
+        
+lijstje = ['keywords', 'cast', 'genres']
+for lijst in lijstje:
+    dfft[lijst] = dfft[lijst].apply(gegevens)
+
+#creating function that finds movies that are similar
+def find_movierec(title, matrix_s=matrix_s):
+    # getting similar indexes
+    indd = index[title] 
+    #finding similar scores of movies and ranking them based on those scores
+    #finding the top 5 movies that are similar
+    getal = list(enumerate(matrix_s[indd])) #(similarity scores)
+    getal = sorted(getal, key=lambda x: x[1], reverse=True) #(sorting scores)
+    getal = getal[1:6] #(top 5 movies)
+    #setting the return for the movies + finding indices of the movies
+    inddd = [i[0] for i in getal]
+    return dfft['title'].iloc[inddd]
+
+#making a def where all data is put into a vectorizer
+def mengeling(j):
+    return ' '.join(j['genres']) + ' '.join(j['keywords']) + ' '.join(j['cast']) + ' '.join(j['overview'])
+dfft['mix'] = dfft.apply(mengeling, axis=1)
+
+#Count vectorizer breaks down a sentence (preprocessing) by removing punctuationmarks ect
+tel = CountVectorizer()
+tel_mat = tel.fit_transform(dfft['mix']) #adding def mix and making this into a matrix
+similarity = cosine_similarity(tel_mat, tel_mat) #using cosine similarity matrix and seeing which movie is best for the user
+
+#use function to find a good movie!
+
+print("-- Movie Recommendation System --")
+print()
+print(" Movies that are recommended:")
+print(find_movierec('The Matrix', similarity))
+
