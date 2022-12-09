@@ -61,6 +61,23 @@ matrix_s = linear_kernel(tv_mat, tv_mat)
 #this helps figure out what the index is of a movie in the df
 index = pd.Series(dfft.index, index=dfft['title'])
 
+#Calculating the score, and sort these to recommend shows (there are some movies with only one rating ect so by doing this, we can calculate a weighted rating)
+#first calculate the minimum votes to be in the list. 
+#I am gonna calculate the average vote of all the movies and the vote count
+
+a = dfft['vote_average'].mean() 
+
+#so the average is 6.1, so on average the mean score is 6/10
+
+#now we need to use a % to have a minimum amount of votes to be listed in the column
+#i decided to include movies with votes above 85% of the movies
+
+b = dfft['vote_count'].quantile(0.85)
+ #737.75 > this is the min amount of votes
+
+#now we filter the movies out
+dfftt = dfft.copy().loc[dfft['vote_count'] >= b]
+
 
 #function list, returns lists
 #more then 5 elements in the list, then those first five. 
