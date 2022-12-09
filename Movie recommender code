@@ -63,7 +63,7 @@ def kr_lijst(k):
 
     #list with nothing in it if there is error in datasets (the whole lists gets returned)
     return []
-
+ 
 lijstje = ['cast', 'keywords', 'genres']
 for lijst in lijstje:
     dfft[lijst] = dfft[lijst].apply(kr_lijst)
